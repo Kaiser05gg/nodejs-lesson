@@ -76,6 +76,66 @@ app.get("/api/todos/:id", (req, res) => {
     res.status(200).json(results[0]);
   });
 });
+
+
+
+
+
+app.put("/api/todos/:id", (req, res) => {
+  const id = req.params.id
+  const sql = `
+ 
+   UPDATE
+    todos
+   SET
+    title = '',
+    description = '',
+    due_date = '',
+   WHERE
+    id = ${id};
+   `;
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.log(err);
+      res.status().json();
+      return;
+    }
+    if (results.length === 0) {
+      res.status(404).json();
+      return;
+    }
+    res.status(200).json(results[0]);
+  });
+});
+
+
+
+
+
+
+app.delete("/api/todos/:id", (req, res) => {
+  const id = req.params.id
+  const sql = `
+  DELETE
+   FROM 
+    todos
+   WHERE
+    id = ${id};
+   `;
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.log(err);
+      res.status().json();
+      return;
+    }
+    res.status(204).json(results[0]);
+  });
+});
+
+
+
+
+
 app.post('/', (req, res) => {
   const todo = req.body;
   console.log(todo.title);
