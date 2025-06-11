@@ -83,18 +83,41 @@ app.get("/api/todos/:id", (req, res) => {
 
 app.put("/api/todos/:id", (req, res) => {
   const id = req.params.id
-  const sql = `
+  const todo = req.body;
+  const selectsql = `
+   SELECT 
+    id, 
+    title,
+    description 
+   FROM 
+    todos
+   WHERE
+    id = ${id};
+   `;
+  connection.query(selectsql, (err, results) => {
+    if (err) {
+      console.log(err);
+      res.status().json();
+      return;
+    }
+    if (results.length === 0) {
+      res.status(404).json();
+      return;
+    }
+    
+  });
+  const updatesql = `
  
    UPDATE
     todos
    SET
-    title = '',
-    description = '',
-    due_date = '',
+    title = '${todo.title}',
+    description = '${todo.description}'
    WHERE
     id = ${id};
    `;
-  connection.query(sql, (err, results) => {
+
+  connection.query(updatesql, (err, results) => {
     if (err) {
       console.log(err);
       res.status().json();
@@ -107,8 +130,6 @@ app.put("/api/todos/:id", (req, res) => {
     res.status(200).json(results[0]);
   });
 });
-
-
 
 
 
